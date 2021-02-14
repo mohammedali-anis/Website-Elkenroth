@@ -17,16 +17,13 @@ public class sqlConnection {
 	public static Connection connect() {
 
 		Connection connect = null;
-
 		try {
-
-			connect = DriverManager.getConnection("jdbc:sqlite:" + sqlConnection.class.getResource("/ProPraEdited.db"));
-
+			String dbPath = "Users/mohammedalianis/Desktop/ProPraEdited.db";
+			connect = DriverManager.getConnection("jdbc:sqlite:/" + dbPath);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return connect;
-
 	}
 
 	/**

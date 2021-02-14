@@ -3,7 +3,7 @@
 
 The project was established and presented as a compulsory course at Siegen University and was supervised by [AR Dr.-Ing. Andreas Hoffmann](https://www.bs.informatik.uni-siegen.de/mitarbeiter/hoffmann/index_html).
 
-The project aims to create a website for the [Elkenroth](https://de.wikipedia.org/wiki/Elkenroth) town in Germany, the website is also an Content Management System with Dashboard where the the adminstartor, editors and user can manage the content of the website.
+The project aims to create a website for the [Elkenroth](https://de.wikipedia.org/wiki/Elkenroth) town in Germany, the website is also a Content Management System with Dashboard where the the adminstartor, editors and user can manage the content of the website.
 
   - Add and manage Users
   - Edit and delete Blogs
@@ -94,11 +94,11 @@ CREATE TABLE IF NOT EXISTS "Blog" (
 	"deletedby_user_id"	INTEGER,
 	PRIMARY KEY("blog_id" AUTOINCREMENT),
 	FOREIGN KEY("user_id") REFERENCES "User"("user_id") ON DELETE CASCADE,
-	FOREIGN KEY("writtenby_user_id") REFERENCES "User"("user_id") ON DELETE SET NULL,
-	FOREIGN KEY("deletedby_user_id") REFERENCES "User"("user_id") ON DELETE SET NULL,
-	FOREIGN KEY("checkedby_user_id") REFERENCES "User"("user_id") ON DELETE SET NULL,
 	FOREIGN KEY("editedby_user_id") REFERENCES "User"("user_id") ON DELETE SET NULL,
-	FOREIGN KEY("section_id") REFERENCES "Section"("section_id") ON DELETE CASCADE
+	FOREIGN KEY("deletedby_user_id") REFERENCES "User"("user_id") ON DELETE SET NULL,
+	FOREIGN KEY("section_id") REFERENCES "Section"("section_id") ON DELETE CASCADE,
+	FOREIGN KEY("checkedby_user_id") REFERENCES "User"("user_id") ON DELETE SET NULL,
+	FOREIGN KEY("writtenby_user_id") REFERENCES "User"("user_id") ON DELETE SET NULL
 );
 CREATE TABLE IF NOT EXISTS "User" (
 	"user_id"	INTEGER NOT NULL,
@@ -113,6 +113,8 @@ CREATE TABLE IF NOT EXISTS "Template" (
 	"template_id"	INTEGER NOT NULL UNIQUE,
 	"template_name"	TEXT,
 	"template_description"	TEXT,
+	"fromDate"	TEXT,
+	"toDate"	TEXT,
 	"user_id"	INTEGER,
 	"section_id"	INTEGER,
 	"website"	TEXT,
@@ -124,6 +126,7 @@ CREATE TABLE IF NOT EXISTS "Template" (
 INSERT INTO "Role" VALUES (1,'Admin');
 INSERT INTO "Role" VALUES (2,'Redakteur');
 INSERT INTO "Role" VALUES (3,'Benutzer');
+COMMIT;
 ```
 or by clicking [here](https://drive.google.com/drive/folders/1ayJVX_Q5EvhWqzcnioRuzQOdMRx35_4o?usp=sharing) you can download it as ``` .db ``` file
 
@@ -135,35 +138,39 @@ Navigate to ``` Tomcat/bin ``` and then Execute the ``` startup.sh ``` script fo
 You have to change the server's port to to ``` :8081 ```
 ##### 3. Change the Database path
 In the package ``` elbiscms ```, class ``` sqlConnection ``` you have to change the Databse path according to the location on your computer.
-So at the line 20 
+So at the line 21 
 ```ruby
-17  public static Connection connect() {
-18	    	Connection connect = null;
-19		    try {
-20			    String dbPath = "Users/mohammedalianis/Desktop/ProPraEdited.db";
-21			    connect = DriverManager.getConnection("jdbc:sqlite:/"+ dbPath);
-22		    } catch (Exception e) {
-23			    e.printStackTrace();
-24		    }
-25		    return connect;
-26	    }
+17    public static Connection connect() {
+18
+19  		Connection connect = null;
+20	    	try {
+21			    String dbPath = "Users/mohammedalianis/Desktop/ProPraEdited.db";
+22			    connect = DriverManager.getConnection("jdbc:sqlite:/" + dbPath);
+23		    } catch (Exception e) {
+24			    e.printStackTrace();
+25		    }
+26		    return connect;
+27	    }
+
 ```
 ##### 4. Change the PDF Folder path
 In the package ``` elbiscms ```, class ``` ConverteHTMLtoPDF ``` you have to change the PDF Folder path according to the location on your computer.
-So at the line 20 
+So at the line 37 
 ```ruby
-29  public void converte(String title,String content,String subsection,String from) throws IOException {
-    ...
-36		try {
-41			String temp = "";
-42			String path = "/Users/mohammedalianis/Desktop/Project 2 _ Updated Version/pdf";
-43			File file = new File(path);
-44			String absolutePath = file.getAbsolutePath();
-45			File theDir = new File(absolutePath + "/" + subsection);
-46			if (!theDir.exists()) {
-47				theDir.mkdirs();
-    ...
-90    }
+29  public void converte(String title, String content, String subsection, String from) throws IOException {
+        ...
+36		    try {
+37			    String path = "/Users/mohammedalianis/Desktop/Project 2 _ Updated Version/pdf";
+38  
+39	    		File file = new File(path);
+40		    	String absolutePath = file.getAbsolutePath();
+41  
+42	    		File theDir = new File(absolutePath + "/" + subsection);
+43		    	if (!theDir.exists()) {
+44			    	theDir.mkdirs();
+45			    }
+        ...
+74        }
 ```
 
 ##### 5. Running the project
